@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ormas - Kesbangpol Jakarta Barat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: {
+                colors: {
+                    primary: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' },
+                    gold: { 400:'#fbbf24',500:'#f59e0b',600:'#d97706' }
+                },
+                fontFamily: { sans: ['Inter','sans-serif'] }
+            }}
+        }
+    </script>
+</head>
+<body class="font-sans bg-gray-50">
+
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="hero-gradient text-white py-2">
+            <div class="container mx-auto px-4 flex justify-between items-center text-sm">
+                <span><i class="fas fa-map-marker-alt mr-1"></i> Jl. Raya Kembangan No.2, Jakarta Barat</span>
+                <div class="flex items-center space-x-3">
+                    <a href="#" class="hover:text-gold-400"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-gold-400"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="../index.html" class="flex items-center space-x-3">
+                    <div class="w-14 h-14 hero-gradient rounded-full flex items-center justify-center shadow-lg">
+                        <i class="fas fa-shield-halved text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-primary-900">KESBANGPOL</h1>
+                        <p class="text-xs text-gray-600">Kota Administrasi Jakarta Barat</p>
+                    </div>
+                </a>
+                <div class="hidden lg:flex items-center space-x-1">
+                    <a href="../index.html" class="nav-link"><i class="fas fa-home mr-1"></i> Home</a>
+                    <div class="relative group">
+                        <button class="nav-link"><i class="fas fa-users mr-1"></i> Forum & Organisasi <i class="fas fa-chevron-down ml-1 text-xs"></i></button>
+                        <div class="dropdown-menu">
+                            <a href="../forum-organisasi/fpk.html">FPK</a>
+                            <a href="../forum-organisasi/fkub.html">FKUB</a>
+                            <a href="../forum-organisasi/fkdm.html">FKDM</a>
+                            <a href="../forum-organisasi/paskibraka.html">PASKIBRAKA</a>
+                            <a href="../forum-organisasi/dppi.html">DPPI</a>
+                        </div>
+                    </div>
+                    <div class="relative group">
+                        <button class="nav-link active"><i class="fas fa-landmark mr-1"></i> Politik & Ormas <i class="fas fa-chevron-down ml-1 text-xs"></i></button>
+                        <div class="dropdown-menu">
+                            <a href="dprd.html">Anggota DPRD</a>
+                            <a href="partai.html">Partai Politik</a>
+                            <a href="ormas.html">Ormas Terlapor</a>
+                            <a href="tim-terpadu.html">Tim Terpadu</a>
+                        </div>
+                    </div>
+                    <a href="../data-ekonomi/index.html" class="nav-link"><i class="fas fa-chart-line mr-1"></i> Data Ekonomi</a>
+                    <div class="relative group">
+                        <button class="nav-link"><i class="fas fa-map mr-1"></i> Peta Monitoring <i class="fas fa-chevron-down ml-1 text-xs"></i></button>
+                        <div class="dropdown-menu">
+                            <a href="../peta-monitoring/kriminal.html">Peta Kriminal</a>
+                            <a href="../peta-monitoring/konflik.html">Peta Konflik</a>
+                            <a href="../peta-monitoring/rumah-ibadah.html">Rumah Ibadah</a>
+                        </div>
+                    </div>
+                </div>
+                <button id="mobileMenuBtn" class="lg:hidden text-gray-700 text-2xl"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-gradient text-white py-16">
+        <div class="container mx-auto px-4">
+            <nav class="breadcrumb">
+                <a href="../index.html">Home</a>
+                <i class="fas fa-chevron-right"></i>
+                <a href="index.html">Politik & Ormas</a>
+                <i class="fas fa-chevron-right"></i>
+                <span class="text-white">Ormas Terlapor</span>
+            </nav>
+            <h1 class="text-4xl font-bold mb-2">Data Ormas</h1>
+            <p class="text-blue-100">Daftar Organisasi Masyarakat (Ormas) di Kota Administrasi Jakarta Barat Tahun 2025</p>
+        </div>
+    </section>
+
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            
+            <div class="grid md:grid-cols-4 gap-6 mb-12" data-aos="fade-up">
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">Total Ormas</p>
+                            <p class="text-3xl font-bold text-gray-900">151</p>
+                        </div>
+                        <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-users text-blue-600 text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">Tidak Terlapor</p>
+                            <p class="text-3xl font-bold text-green-600">135</p>
+                        </div>
+                        <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">Terlapor</p>
+                            <p class="text-3xl font-bold text-red-600">12</p>
+                        </div>
+                        <div class="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">Proses Verifikasi</p>
+                            <p class="text-3xl font-bold text-yellow-600">4</p>
+                        </div>
+                        <div class="w-14 h-14 bg-yellow-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-clock text-yellow-600 text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden" data-aos="fade-up">
+                <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-gray-900">Daftar Ormas</h2>
+                    <div class="relative">
+                        <input type="text" id="searchOrmas" placeholder="Cari ormas..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none">
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Ormas</th>
+                                <th>Ketua</th>
+                                <th>Bidang</th>
+                                <th>Kecamatan</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ormasTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-gray-300 pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
+                <p>&copy; 2026 Suku Badan Kesbangpol Kota Administrasi Jakarta Barat. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="../assets/js/data.js"></script>
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+        initOrmasPage();
+        
+        // Search functionality
+        document.getElementById('searchOrmas').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const filtered = DATA.ormas.filter(item => 
+                item.nama_ormas.toLowerCase().includes(searchTerm) ||
+                item.ketua.toLowerCase().includes(searchTerm) ||
+                item.kecamatan.toLowerCase().includes(searchTerm)
+            );
+            
+            renderTable('ormasTbody', ['No', 'Nama Ormas', 'Ketua', 'Bidang', 'Kecamatan', 'Status'], filtered, (item, index) => {
+                let badge = '';
+                if (item.status_terlapor === 'terlapor') badge = '<span class="badge badge-danger">Terlapor</span>';
+                else if (item.status_terlapor === 'proses_verifikasi') badge = '<span class="badge badge-warning">Verifikasi</span>';
+                else badge = '<span class="badge badge-success">Tidak Terlapor</span>';
+                
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>
+                            <p class="font-semibold text-gray-900">${item.nama_ormas}</p>
+                            <p class="text-xs text-gray-500">${item.alamat}</p>
+                        </td>
+                        <td>${item.ketua}</td>
+                        <td><span class="badge badge-info">${item.bidang}</span></td>
+                        <td>${item.kecamatan}</td>
+                        <td>${badge}</td>
+                    </tr>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>

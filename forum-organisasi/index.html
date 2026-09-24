@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum & Organisasi - Kesbangpol Jakarta Barat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="bg-gray-50">
+    <main class="data-page">
+        <div class="data-page-inner">
+            <a href="../index.html" class="data-page-back"><i class="fas fa-arrow-left"></i> Kembali ke Home</a>
+            <header class="data-page-header">
+                <h1>Forum & Organisasi</h1>
+                <p>Data forum dan organisasi yang dikelola secara terpusat melalui halaman admin.</p>
+            </header>
+            <div id="cards" class="collection-grid"></div>
+        </div>
+    </main>
+    <script src="../assets/js/data.js"></script>
+    <script>
+        const collections = [
+            ['fpk', 'FPK', 'fpk.html', 'fa-handshake'],
+            ['fkub', 'FKUB', 'fkub.html', 'fa-place-of-worship'],
+            ['fkdm', 'FKDM', 'fkdm.html', 'fa-people-group'],
+            ['paskibraka', 'Paskibraka', 'paskibraka.html', 'fa-flag'],
+            ['dppi', 'DPPI', 'dppi.html', 'fa-building']
+        ];
+        const getData = key => {
+            try {
+                const stored = JSON.parse(localStorage.getItem(`kesbangpol_${key}`));
+                if (Array.isArray(stored)) return stored;
+            } catch (error) { /* use static fallback */ }
+            return Array.isArray(DATA[key]) ? DATA[key] : [];
+        };
+        document.getElementById('cards').innerHTML = collections.map(([key, title, href, icon]) => `
+            <a href="${href}" class="collection-card">
+                <span class="collection-icon"><i class="fas ${icon}"></i></span>
+                <h2 class="text-xl font-bold mt-4">${title}</h2>
+                <p class="text-slate-500 mt-2">${getData(key).length} data tersedia</p>
+            </a>
+        `).join('');
+    </script>
+</body>
+</html>

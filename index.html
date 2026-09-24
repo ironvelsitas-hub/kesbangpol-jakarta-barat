@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kesbangpol Jakarta Barat - Home</title>
+    
+    <!-- Favicon (Logo di Tab Browser) -->
+    <link rel="icon" type="image/png" href="assets/images/logo1.png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+                            400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8',
+                            800: '#1e40af', 900: '#1e3a8a',
+                        },
+                        gold: {
+                            400: '#fbbf24', 500: '#f59e0b', 600: '#d97706',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans bg-gray-50">
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <!-- Top Bar -->
+        <div class="hero-gradient text-white py-2">
+            <div class="container mx-auto px-4 flex justify-between items-center text-sm">
+                <div class="flex items-center space-x-4">
+                    <span><i class="fas fa-map-marker-alt mr-1"></i> Jl. Raya Kembangan No.2, Jakarta Barat</span>
+                    <span class="hidden md:inline"><i class="fas fa-phone mr-1"></i> (021) 1234567</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <a href="#" class="hover:text-gold-400 transition"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-gold-400 transition"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-gold-400 transition"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="hover:text-gold-400 transition"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Navbar -->
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <!-- ==================== LOGO SECTION ==================== -->
+                <a href="index.html" class="flex items-center space-x-3">
+                    <!-- LOGO: Ganti src dengan path logo Anda -->
+                    <div class="w-14 h-14 rounded-full flex items-center justify-center shadow-lg overflow-hidden bg-white border-2 border-primary-600">
+                        <img src="assets/images/logo1.png" 
+                             alt="Logo Kesbangpol Jakarta Barat" 
+                             class="w-full h-full object-contain p-1"
+                             onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-shield-halved text-primary-600 text-2xl\'></i>';">
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-primary-900 leading-tight">KESBANGPOL</h1>
+                        <p class="text-xs text-gray-600">Kota Administrasi Jakarta Barat</p>
+                    </div>
+                </a>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center space-x-1">
+                    <a href="index.html" class="nav-link active">
+                        <i class="fas fa-home mr-1"></i> Home
+                    </a>
+                    
+                    <!-- Forum & Organisasi -->
+                    <div class="relative group">
+                        <button class="nav-link">
+                            <i class="fas fa-users mr-1"></i> Forum & Organisasi <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="forum-organisasi/fpk.html"><i class="fas fa-handshake text-primary-500 mr-2"></i> FPK</a>
+                            <a href="forum-organisasi/fkub.html"><i class="fas fa-place-of-worship text-primary-500 mr-2"></i> FKUB</a>
+                            <a href="forum-organisasi/fkdm.html"><i class="fas fa-people-group text-primary-500 mr-2"></i> FKDM</a>
+                            <a href="forum-organisasi/paskibraka.html"><i class="fas fa-flag text-primary-500 mr-2"></i> PASKIBRAKA</a>
+                            <a href="forum-organisasi/dppi.html"><i class="fas fa-building text-primary-500 mr-2"></i> DPPI</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Politik & Ormas -->
+                    <div class="relative group">
+                        <button class="nav-link">
+                            <i class="fas fa-landmark mr-1"></i> Politik & Ormas <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="politik-ormas/dprd.html"><i class="fas fa-user-tie text-primary-500 mr-2"></i> Anggota DPRD (Dapil 9 & 10)</a>
+                            <a href="politik-ormas/partai.html"><i class="fas fa-flag-usa text-primary-500 mr-2"></i> Partai Politik</a>
+                            <a href="politik-ormas/ormas.html"><i class="fas fa-exclamation-triangle text-primary-500 mr-2"></i> Ormas Terlapor</a>
+                            <a href="politik-ormas/tim-terpadu.html"><i class="fas fa-people-arrows text-primary-500 mr-2"></i> Tim Terpadu</a>
+                        </div>
+                    </div>
+                    
+                    <a href="data-ekonomi/index.html" class="nav-link">
+                        <i class="fas fa-chart-line mr-1"></i> Data Ekonomi
+                    </a>
+                    
+                    <!-- Peta Monitoring -->
+                    <div class="relative group">
+                        <button class="nav-link">
+                            <i class="fas fa-map mr-1"></i> Peta Monitoring <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="peta-monitoring/kriminal.html"><i class="fas fa-skull-crossbones text-red-500 mr-2"></i> Peta Kriminal</a>
+                            <a href="peta-monitoring/konflik.html"><i class="fas fa-fire text-orange-500 mr-2"></i> Peta Konflik</a>
+                            <a href="peta-monitoring/rumah-ibadah.html"><i class="fas fa-place-of-worship text-green-500 mr-2"></i> Rumah Ibadah</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="lg:hidden text-gray-700 text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden lg:hidden py-4 border-t">
+                <a href="index.html" class="mobile-link"><i class="fas fa-home mr-2"></i> Home</a>
+                <a href="forum-organisasi/index.html" class="mobile-link"><i class="fas fa-users mr-2"></i> Forum & Organisasi</a>
+                <a href="politik-ormas/index.html" class="mobile-link"><i class="fas fa-landmark mr-2"></i> Politik & Ormas</a>
+                <a href="data-ekonomi/index.html" class="mobile-link"><i class="fas fa-chart-line mr-2"></i> Data Ekonomi</a>
+                <a href="peta-monitoring/index.html" class="mobile-link"><i class="fas fa-map mr-2"></i> Peta Monitoring</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== HERO SECTION DENGAN FOTO ==================== -->
+    <section class="hero-section relative overflow-hidden">
+        <!-- Background Image dengan Overlay -->
+        <div class="absolute inset-0">
+            <!-- FOTO HERO: Ganti src dengan path foto Anda -->
+            <img src="assets/images/walikota_aerial.jpg" 
+                 alt="Hero Background" 
+                 class="w-full h-full object-cover"
+                 onerror="this.style.display='none';">
+            
+            <!-- Gradient Overlay - agar teks tetap terbaca -->
+            <div class="absolute inset-0 bg-gradient-to-r from-primary-900/95 via-primary-800/85 to-primary-700/75"></div>
+        </div>
+        
+        <!-- Pattern Overlay -->
+        <div class="absolute inset-0 opacity-10 pattern-bg"></div>
+        
+        <!-- Content -->
+        <div class="container mx-auto px-4 py-24 md:py-32 relative z-10">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- Left Content -->
+                <div class="text-white" data-aos="fade-right">
+                    <div class="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium mb-6 border border-white/30">
+                        <i class="fas fa-shield-halved mr-2 text-gold-400"></i> Suku Badan Kesatuan Bangsa dan Politik
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                        Kota Administrasi <br>
+                        <span class="text-gold-400">Jakarta Barat</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-blue-100 mb-8 leading-relaxed">
+                        Mewujudkan masyarakat Jakarta Barat yang aman, damai, dan demokratis melalui pembinaan kesatuan bangsa dan politik.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#statistik" class="btn-gold">
+                            <i class="fas fa-chart-bar mr-2"></i> Lihat Statistik
+                        </a>
+                        <a href="#layanan" class="btn-outline-white">
+                            <i class="fas fa-info-circle mr-2"></i> Layanan Kami
+                        </a>
+                    </div>
+                    
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-white/20">
+                        <div>
+                            <div class="text-3xl font-bold text-gold-400">151+</div>
+                            <div class="text-sm text-blue-200">Ormas Terdata</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-gold-400">333+</div>
+                            <div class="text-sm text-blue-200">Rumah Ibadah</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-gold-400">52</div>
+                            <div class="text-sm text-blue-200">Lokasi Monitoring</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Content - Foto Gedung/Kantor -->
+                <div class="hidden md:block" data-aos="fade-left">
+                    <div class="relative">
+                        <!-- FOTO KANTOR: Ganti src dengan path foto kantor Anda -->
+                        <div class="rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20">
+                            <img src="assets/images/walikota_aerial.jpg" 
+                                 alt="Kantor Kesbangpol Jakarta Barat" 
+                                 class="w-full h-96 object-cover"
+                                 onerror="this.parentElement.innerHTML='<div class=\'w-full h-96 bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center\'><i class=\'fas fa-building text-white text-8xl opacity-50\'></i></div>';">
+                        </div>
+                        
+                        <!-- Floating Card 1 -->
+                        <div class="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-2xl p-4 flex items-center space-x-3 animate-float">
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold text-gray-900">Terpercaya</div>
+                                <div class="text-xs text-gray-500">Pelayanan Prima</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Floating Card 2 -->
+                        <div class="absolute -top-6 -right-6 bg-white rounded-xl shadow-2xl p-4 flex items-center space-x-3 animate-float" style="animation-delay: 1s;">
+                            <div class="w-12 h-12 bg-gold-400/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-award text-gold-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold text-gray-900">Akuntabel</div>
+                                <div class="text-xs text-gray-500">Transparan</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wave Bottom -->
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 45C840 60 960 90 1080 105C1200 120 1320 120 1380 120H1440V120H0Z" fill="#f9fafb"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- ==================== STATISTIK SECTION ==================== -->
+    <section id="statistik" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <div class="inline-block px-4 py-2 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold mb-4">
+                    <i class="fas fa-chart-bar mr-2"></i> Data Statistik
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Statistik Data Terkini</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Data terkini dari berbagai forum, organisasi, dan monitoring di Kota Administrasi Jakarta Barat</p>
+            </div>
+            
+            <div id="statistikGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Data akan di-render oleh JavaScript -->
+            </div>
+            
+            <!-- Peta Monitoring Stats -->
+            <div id="petaStats" class="mt-12 grid md:grid-cols-3 gap-6">
+                <!-- Data akan di-render oleh JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== LAYANAN SECTION ==================== -->
+    <section id="layanan" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <div class="inline-block px-4 py-2 bg-gold-400/20 text-gold-600 rounded-full text-sm font-semibold mb-4">
+                    <i class="fas fa-th-large mr-2"></i> Layanan
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Layanan & Informasi</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Akses berbagai informasi dan layanan yang tersedia</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <a href="forum-organisasi/index.html" class="service-card bg-gradient-to-br from-blue-500 to-blue-700" data-aos="fade-up">
+                    <div class="service-icon">
+                        <i class="fas fa-users text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Forum & Organisasi</h3>
+                    <p class="text-blue-100 mb-6">Data FPK, FKUB, FKDM, Paskibraka, dan DPPI Kota Jakarta Barat</p>
+                    <span class="service-link">
+                        Selengkapnya <i class="fas fa-arrow-right ml-2"></i>
+                    </span>
+                </a>
+                
+                <!-- Card 2 -->
+                <a href="politik-ormas/index.html" class="service-card bg-gradient-to-br from-purple-500 to-purple-700" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-icon">
+                        <i class="fas fa-landmark text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Politik & Ormas</h3>
+                    <p class="text-purple-100 mb-6">Informasi Anggota DPRD, Partai Politik, Ormas Terlapor, dan Tim Terpadu</p>
+                    <span class="service-link">
+                        Selengkapnya <i class="fas fa-arrow-right ml-2"></i>
+                    </span>
+                </a>
+                
+                <!-- Card 3 -->
+                <a href="data-ekonomi/index.html" class="service-card bg-gradient-to-br from-green-500 to-green-700" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-icon">
+                        <i class="fas fa-chart-line text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Data Ekonomi</h3>
+                    <p class="text-green-100 mb-6">Statistik UMKM, pasar, pedagang, dan nilai transaksi per kecamatan</p>
+                    <span class="service-link">
+                        Selengkapnya <i class="fas fa-arrow-right ml-2"></i>
+                    </span>
+                </a>
+                
+                <!-- Card 4 -->
+                <a href="peta-monitoring/kriminal.html" class="service-card bg-gradient-to-br from-red-500 to-red-700" data-aos="fade-up">
+                    <div class="service-icon">
+                        <i class="fas fa-map-marked-alt text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Peta Kriminal</h3>
+                    <p class="text-red-100 mb-6">Pemetaan titik rawan kriminalitas di wilayah Jakarta Barat</p>
+                    <span class="service-link">
+                        Selengkapnya <i class="fas fa-arrow-right ml-2"></i>
+                    </span>
+                </a>
+                
+                <!-- Card 5 -->
+                <a href="peta-monitoring/konflik.html" class="service-card bg-gradient-to-br from-orange-500 to-orange-700" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-icon">
+                        <i class="fas fa-fire text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Peta Konflik</h3>
+                    <p class="text-orange-100 mb-6">Monitoring potensi konflik sosial di wilayah Jakarta Barat</p>
+                    <span class="service-link">
+                        Selengkapnya <i class="fas fa-arrow-right ml-2"></i>
+                    </span>
+                </a>
+                
+                <!-- Card 6 -->
+                <a href="peta-monitoring/rumah-ibadah.html" class="service-card bg-gradient-to-br from-teal-500 to-teal-700" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-icon">
+                        <i class="fas fa-place-of-worship text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Rumah Ibadah</h3>
+                    <p class="text-teal-100 mb-6">Pemetaan lokasi rumah ibadah di Kota Jakarta Barat</p>
+                    <span class="service-link">
+                        Selengkapnya <i class="fas fa-arrow-right ml-2"></i>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== BERITA SECTION ==================== -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-12" data-aos="fade-up">
+                <div>
+                    <div class="inline-block px-4 py-2 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold mb-4">
+                        <i class="fas fa-newspaper mr-2"></i> Berita
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Berita Terbaru</h2>
+                    <p class="text-gray-600">Informasi terkini seputar kegiatan Kesbangpol</p>
+                </div>
+                <a href="#" class="hidden md:inline-flex items-center text-primary-600 font-semibold hover:text-primary-700">
+                    Lihat Semua <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <div id="beritaGrid" class="grid md:grid-cols-3 gap-8">
+                <!-- Data akan di-render oleh JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CTA SECTION ==================== -->
+    <section class="relative overflow-hidden">
+        <!-- Background Image -->
+        <div class="absolute inset-0">
+            <img src="assets/images/cta-bg.jpg" 
+                 alt="CTA Background" 
+                 class="w-full h-full object-cover"
+                 onerror="this.style.display='none';">
+            <div class="absolute inset-0 hero-gradient opacity-95"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 py-20 relative z-10">
+            <div class="max-w-3xl mx-auto text-center text-white" data-aos="fade-up">
+                <div class="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium mb-6 border border-white/30">
+                    <i class="fas fa-headset mr-2"></i> Hubungi Kami
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">Butuh Bantuan atau Informasi?</h2>
+                <p class="text-blue-100 text-lg mb-8">Hubungi kami untuk pertanyaan seputar layanan Kesbangpol Jakarta Barat</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="tel:0211234567" class="btn-white">
+                        <i class="fas fa-phone mr-2"></i> (021) 1234567
+                    </a>
+                    <a href="mailto:info@kesbangpol.jakbar.go.id" class="btn-gold">
+                        <i class="fas fa-envelope mr-2"></i> Kirim Email
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-gray-900 text-gray-300 pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <!-- About -->
+                <div class="md:col-span-1">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <!-- LOGO FOOTER -->
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center overflow-hidden bg-white border-2 border-primary-600">
+                            <img src="assets/images/logo.png" 
+                                 alt="Logo" 
+                                 class="w-full h-full object-contain p-1"
+                                 onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-shield-halved text-primary-600 text-xl\'></i>';">
+                        </div>
+                        <div>
+                            <h3 class="text-white font-bold">KESBANGPOL</h3>
+                            <p class="text-xs text-gray-400">Jakarta Barat</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                        Suku Badan Kesatuan Bangsa dan Politik Kota Administrasi Jakarta Barat
+                    </p>
+                    <div class="flex space-x-3">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-white font-bold mb-6">Tautan Cepat</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="index.html" class="footer-link"><i class="fas fa-chevron-right text-xs mr-2"></i> Home</a></li>
+                        <li><a href="forum-organisasi/index.html" class="footer-link"><i class="fas fa-chevron-right text-xs mr-2"></i> Forum & Organisasi</a></li>
+                        <li><a href="politik-ormas/index.html" class="footer-link"><i class="fas fa-chevron-right text-xs mr-2"></i> Politik & Ormas</a></li>
+                        <li><a href="data-ekonomi/index.html" class="footer-link"><i class="fas fa-chevron-right text-xs mr-2"></i> Data Ekonomi</a></li>
+                        <li><a href="peta-monitoring/index.html" class="footer-link"><i class="fas fa-chevron-right text-xs mr-2"></i> Peta Monitoring</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Layanan -->
+                <div>
+                    <h4 class="text-white font-bold mb-6">Layanan</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="forum-organisasi/fpk.html" class="footer-link"><i class="fas fa-chevron-right text-xs mr-2"></i> Data FPK</a></li>
+                        <li><a href="forum-organisasi/fkub.html" class="footer-link"><i class="fas fa-chevron-right text-xs mr-2"></i> Data FKUB</a></li>
+                        <li><a href="politik-ormas/dprd.html" class="footer-link"><i class="fas fa-chevron-right text-xs mr-2"></i> Anggota DPRD</a></li>
+                        <li><a href="politik-ormas/ormas.html" class="footer-link"><i class="fas fa-chevron-right text-xs mr-2"></i> Ormas Terlapor</a></li>
+                        <li><a href="peta-monitoring/rumah-ibadah.html" class="footer-link"><i class="fas fa-chevron-right text-xs mr-2"></i> Rumah Ibadah</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Kontak -->
+                <div>
+                    <h4 class="text-white font-bold mb-6">Kontak Kami</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-primary-400 mt-1 mr-3"></i>
+                            <span>Jl. Raya Kembangan No.2, Kembangan, Jakarta Barat 11610</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-phone text-primary-400 mt-1 mr-3"></i>
+                            <span>(021) 1234567</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope text-primary-400 mt-1 mr-3"></i>
+                            <span>info@kesbangpol.jakbar.go.id</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-clock text-primary-400 mt-1 mr-3"></i>
+                            <span>Senin - Jumat: 08.00 - 16.00 WIB</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+                <p>&copy; 2026 Suku Badan Kesbangpol Kota Administrasi Jakarta Barat. All rights reserved.</p>
+                <p class="mt-2 md:mt-0">Dikembangkan dengan <i class="fas fa-heart text-red-500"></i> untuk Jakarta Barat</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AOS Script -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Data & Main Script -->
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

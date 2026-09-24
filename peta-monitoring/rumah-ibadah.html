@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rumah Ibadah - Kesbangpol Jakarta Barat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: {
+                colors: {
+                    primary: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' },
+                    gold: { 400:'#fbbf24',500:'#f59e0b',600:'#d97706' }
+                },
+                fontFamily: { sans: ['Inter','sans-serif'] }
+            }}
+        }
+    </script>
+</head>
+<body class="font-sans bg-gray-50">
+
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="hero-gradient text-white py-2">
+            <div class="container mx-auto px-4 flex justify-between items-center text-sm">
+                <span><i class="fas fa-map-marker-alt mr-1"></i> Jl. Raya Kembangan No.2, Jakarta Barat</span>
+                <div class="flex items-center space-x-3">
+                    <a href="#" class="hover:text-gold-400"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-gold-400"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="../index.html" class="flex items-center space-x-3">
+                    <div class="w-14 h-14 hero-gradient rounded-full flex items-center justify-center shadow-lg">
+                        <i class="fas fa-shield-halved text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-primary-900">KESBANGPOL</h1>
+                        <p class="text-xs text-gray-600">Kota Administrasi Jakarta Barat</p>
+                    </div>
+                </a>
+                <div class="hidden lg:flex items-center space-x-1">
+                    <a href="../index.html" class="nav-link"><i class="fas fa-home mr-1"></i> Home</a>
+                    <div class="relative group">
+                        <button class="nav-link"><i class="fas fa-users mr-1"></i> Forum & Organisasi <i class="fas fa-chevron-down ml-1 text-xs"></i></button>
+                        <div class="dropdown-menu">
+                            <a href="../forum-organisasi/fpk.html">FPK</a>
+                            <a href="../forum-organisasi/fkub.html">FKUB</a>
+                            <a href="../forum-organisasi/fkdm.html">FKDM</a>
+                            <a href="../forum-organisasi/paskibraka.html">PASKIBRAKA</a>
+                            <a href="../forum-organisasi/dppi.html">DPPI</a>
+                        </div>
+                    </div>
+                    <div class="relative group">
+                        <button class="nav-link"><i class="fas fa-landmark mr-1"></i> Politik & Ormas <i class="fas fa-chevron-down ml-1 text-xs"></i></button>
+                        <div class="dropdown-menu">
+                            <a href="../politik-ormas/dprd.html">Anggota DPRD</a>
+                            <a href="../politik-ormas/partai.html">Partai Politik</a>
+                            <a href="../politik-ormas/ormas.html">Ormas Terlapor</a>
+                            <a href="../politik-ormas/tim-terpadu.html">Tim Terpadu</a>
+                        </div>
+                    </div>
+                    <a href="../data-ekonomi/index.html" class="nav-link"><i class="fas fa-chart-line mr-1"></i> Data Ekonomi</a>
+                    <div class="relative group">
+                        <button class="nav-link active"><i class="fas fa-map mr-1"></i> Peta Monitoring <i class="fas fa-chevron-down ml-1 text-xs"></i></button>
+                        <div class="dropdown-menu">
+                            <a href="kriminal.html">Peta Kriminal</a>
+                            <a href="konflik.html">Peta Konflik</a>
+                            <a href="rumah-ibadah.html">Rumah Ibadah</a>
+                        </div>
+                    </div>
+                </div>
+                <button id="mobileMenuBtn" class="lg:hidden text-gray-700 text-2xl"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-gradient text-white py-16">
+        <div class="container mx-auto px-4">
+            <nav class="breadcrumb">
+                <a href="../index.html">Home</a>
+                <i class="fas fa-chevron-right"></i>
+                <a href="index.html">Peta Monitoring</a>
+                <i class="fas fa-chevron-right"></i>
+                <span class="text-white">Rumah Ibadah</span>
+            </nav>
+            <h1 class="text-4xl font-bold mb-2">Peta Rumah Ibadah</h1>
+            <p class="text-blue-100">Pemetaan rumah ibadah di Kota Administrasi Jakarta Barat</p>
+        </div>
+    </section>
+
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            
+            <div class="grid md:grid-cols-4 gap-6 mb-8" data-aos="fade-up">
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-500 text-sm">Total Rumah Ibadah</span>
+                        <i class="fas fa-place-of-worship text-green-500"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-gray-900">333</p>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-500 text-sm">Masjid</span>
+                        <i class="fas fa-mosque text-green-600"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-green-600">280</p>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-500 text-sm">Gereja</span>
+                        <i class="fas fa-church text-blue-500"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-blue-600">40</p>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-500 text-sm">Vihara/Klenteng</span>
+                        <i class="fas fa-dharmachakra text-orange-500"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-orange-600">13</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6 mb-6" data-aos="fade-up">
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fas fa-filter text-primary-600"></i>
+                    <h3 class="font-bold text-gray-900">Filter Wilayah & Pencarian</h3>
+                </div>
+                <div id="mapFilters"></div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6 mb-8" data-aos="fade-up">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">
+                        <i class="fas fa-map-marked-alt text-green-500 mr-2"></i> Peta Sebaran Rumah Ibadah
+                    </h2>
+                    <div class="flex gap-2 text-xs">
+                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full"><i class="fas fa-circle text-xs mr-1"></i> Rumah Ibadah</span>
+                    </div>
+                </div>
+                <div id="map"></div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden" data-aos="fade-up">
+                <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-gray-900">Daftar Rumah Ibadah</h2>
+                    <div class="relative">
+                        <input type="text" id="searchIbadah" placeholder="Cari rumah ibadah..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none">
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Jenis</th>
+                                <th>Kecamatan</th>
+                                <th>Kelurahan</th>
+                                <th>Alamat</th>
+                                <th>Pengurus</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ibadahTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-gray-300 pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
+                <p>&copy; 2026 Suku Badan Kesbangpol Kota Administrasi Jakarta Barat. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../assets/js/data.js"></script>
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+        initMapPage('rumah-ibadah');
+        
+        // Render table
+        let filteredIbadah = DATA.rumahIbadah;
+        
+        function renderIbadahTable(data) {
+            renderTable('ibadahTbody', ['No', 'Nama', 'Jenis', 'Kecamatan', 'Kelurahan', 'Alamat', 'Pengurus'], data, (item, index) => {
+                let badgeClass = item.jenis === 'masjid' ? 'badge-success' : 
+                                item.jenis === 'gereja' ? 'badge-info' : 
+                                item.jenis === 'vihara' ? 'badge-warning' : 'badge-danger';
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td class="font-semibold text-gray-900">${item.nama}</td>
+                        <td><span class="badge ${badgeClass} capitalize">${item.jenis}</span></td>
+                        <td>${item.kecamatan}</td>
+                        <td>${item.kelurahan}</td>
+                        <td>${item.alamat}</td>
+                        <td>${item.pengurus}</td>
+                    </tr>
+                `;
+            });
+        }
+        
+        renderIbadahTable(filteredIbadah);
+        
+        // Search functionality
+        document.getElementById('searchIbadah').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const filtered = DATA.rumahIbadah.filter(item => 
+                item.nama.toLowerCase().includes(searchTerm) ||
+                item.kecamatan.toLowerCase().includes(searchTerm) ||
+                item.kelurahan.toLowerCase().includes(searchTerm)
+            );
+            renderIbadahTable(filtered);
+        });
+    </script>
+</body>
+</html>
