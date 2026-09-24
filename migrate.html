@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Migrasi Database</title>
+</head>
+<body>
+    <h1>Migrasi Data ke MySQL</h1>
+    <button id="btnMigrate" style="padding: 10px 20px; font-size: 16px;">Mulai Migrasi</button>
+    <div id="status" style="margin-top: 20px; font-family: monospace;"></div>
+
+    <script src="../assets/js/data.js"></script>
+    <script>
+        document.getElementById('btnMigrate').addEventListener('click', async () => {
+            const status = document.getElementById('status');
+            status.innerHTML = 'Memulai migrasi...<br>';
+            
+            try {
+                const res = await fetch('../api/crud.php?action=migrate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(DATA) // dari data.js
+                });
+                
+                const result = await res.json();
+                if (result.success) {
+                    status.innerHTML += '<span style="color: green;">Migrasi berhasil! Semua data statis telah dimasukkan ke database MySQL.</span><br>';
+                    status.innerHTML += 'Silakan cek halaman admin.';
+                } else {
+                    status.innerHTML += '<span style="color: red;">Error: ' + result.error + '</span>';
+                }
+            } catch (e) {
+                status.innerHTML += '<span style="color: red;">Gagal terhubung ke API: ' + e.message + '</span>';
+            }
+        });
+    </script>
+</body>
+</html>

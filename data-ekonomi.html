@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Ekonomi - Admin Kesbangpol</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+    <div id="adminApp"></div>
+
+    <script src="../assets/js/data.js"></script>
+    <script src="../assets/auth.js"></script>
+    <script src="../assets/js/admin.js"></script>
+    <script>
+        if (!Auth.requireAuth()) throw new Error('Not authenticated');
+
+        const escapeHTML = (value) => String(value ?? '-')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+
+        const formatRupiah = (num) => {
+            if (!num || isNaN(num)) return '-';
+            return 'Rp ' + new Intl.NumberFormat('id-ID').format(num);
+        };
+
+        const KECAMATAN_LIST = ['Cengkareng','Grogol Petamburan','Kalideres','Kebon Jeruk','Kembangan','Palmerah','Tambora','Taman Sari'];
+        const JENIS_LIST = ['Perdagangan','Industri Kecil','Jasa','Kuliner','Koperasi','Pertanian/Peternakan','Daur Ulang'];
+
+        let allData = [];
+        let currentPage = 1;
+        const PAGE_SIZE = 10;
+
+        // ====================== INIT ======================
+        async function initData() {
+            allData = await Admin.getData('dataEkonomi');
+            renderAll();
+            Admin.renderPage('Data Ekonomi', 'Data Ekonomi', buildLayout());
+        }
+
+        function getFiltered() {
+            const search = (document.getElementById('searchEkonomi')?.value || '').toLowerCase();
+            const kec    = document.getElementById('filterKecamatanEk')?.value || '';
+            const jenis  = document.getElementById('filterJenisEk')?.value || '';
+            const status = document.getElementById('filterStatusEk')?.value || '';
+
+            return allData.filter(d => {
+                const matchSearch = !search || d.nama_usaha.toLowerCase().includes(search) || d.pemilik.toLowerCase().includes(search);
+                const matchKec    = !kec    || d.kecamatan === kec;
+                const matchJenis  = !jenis  || d.jenis_usaha === jenis;
+                const matchStatus = !status || d.status === status;
+                return matchSearch && matchKec && matchJenis && matchStatus;
+            });
+        }
+
+        function buildLayout() {
+            return `
+                <div id="ekonomiRoot">
+                    <!-- Stats -->
+                    <div id="ekonomiStats"></div>
+                    <!-- Toolbar -->
+                    <div class="data-card" style="margin-top: 20px;">
+                        <div class="data-card-header">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div style="width:38px;height:38px;background:var(--primary-light);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:var(--primary);">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:15px;font-weight:700;color:var(--text);">Data Usaha Ekonomi</div>
+                                    <div id="jumlahLabel" style="font-size:12px;color:var(--muted);"></div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="openAddModal()">
+                                <i class="fas fa-plus"></i> Tambah Data
+                            </button>
+                        </div>
+                        <!-- Filters -->
+                        <div style="padding:16px 22px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:10px;">
+                            <div class="search-box" style="flex:1;min-width:180px;">
+                                <i class="fas fa-search"></i>
+                                <input id="searchEkonomi" type="text" placeholder="Cari nama usaha / pemilik..." oninput="onFilter()">
+                            </div>
+                            <select id="filterKecamatanEk" style="height:38px;padding:0 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:var(--font);outline:none;background:var(--surface);color:var(--text);" onchange="onFilter()">
+                                <option value="">Semua Kecamatan</option>
+                                ${KECAMATAN_LIST.map(k => `<option value="${k}">${k}</option>`).join('')}
+                            </select>
+                            <select id="filterJenisEk" style="height:38px;padding:0 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:var(--font);outline:none;background:var(--surface);color:var(--text);" onchange="onFilter()">
+                                <option value="">Semua Jenis Usaha</option>
+                                ${JENIS_LIST.map(j => `<option value="${j}">${j}</option>`).join('')}
+                            </select>
+                            <select id="filterStatusEk" style="height:38px;padding:0 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:var(--font);outline:none;background:var(--surface);color:var(--text);" onchange="onFilter()">
+                                <option value="">Semua Status</option>
+                                <option value="aktif">Aktif</option>
+                                <option value="tidak_aktif">Tidak Aktif</option>
+                            </select>
+                        </div>
+                        <!-- Table -->
+                        <div style="overflow-x:auto;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>komoditas</th>
+                                        <th>Jenis</th>
+                                        <th>Pemilik</th>
+                                        <th>Kecamatan</th>
+                                        <th>Tenaga Kerja</th>
+                                        <th>Omzet / Bulan</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ekonomiTableBody"></tbody>
+                            </table>
+                        </div>
+                        <div id="ekonomiPagination" style="padding:16px 22px;border-top:1px solid var(--border);"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAll() {
+            renderStats();
+            renderTable();
+        }
+
+        function renderStats() {
+            const total   = allData.length;
+            const aktif   = allData.filter(d => d.status === 'aktif').length;
+            const tkTotal = allData.reduce((s, d) => s + (parseInt(d.jumlah_tenaga_kerja) || 0), 0);
+            const omzTotal= allData.reduce((s, d) => s + (parseInt(d.omzet_per_bulan) || 0), 0);
+
+            const jenisCount = {};
+            allData.forEach(d => { jenisCount[d.jenis_usaha] = (jenisCount[d.jenis_usaha] || 0) + 1; });
+            const topJenis = Object.entries(jenisCount).sort((a,b)=>b[1]-a[1])[0];
+
+            const el = document.getElementById('ekonomiStats');
+            if (!el) return;
+            el.innerHTML = `
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:4px;">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-store"></i></div>
+                        <div class="stat-value">${total}</div>
+                        <div class="stat-label">Total Unit Usaha</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-value">${aktif}</div>
+                        <div class="stat-label">Usaha Aktif</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><i class="fas fa-users"></i></div>
+                        <div class="stat-value">${new Intl.NumberFormat('id-ID').format(tkTotal)}</div>
+                        <div class="stat-label">Total Tenaga Kerja</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange"><i class="fas fa-coins"></i></div>
+                        <div class="stat-value" style="font-size:18px;">${formatRupiah(omzTotal)}</div>
+                        <div class="stat-label">Total Omzet / Bulan</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTable() {
+            const filtered = getFiltered();
+            const total    = filtered.length;
+            const totalPages = Math.ceil(total / PAGE_SIZE) || 1;
+            if (currentPage > totalPages) currentPage = 1;
+
+            const start = (currentPage - 1) * PAGE_SIZE;
+            const rows  = filtered.slice(start, start + PAGE_SIZE);
+
+            const jumlahEl = document.getElementById('jumlahLabel');
+            if (jumlahEl) jumlahEl.textContent = `${total} data ditemukan`;
+
+            const tbody = document.getElementById('ekonomiTableBody');
+            if (!tbody) return;
+
+            if (!rows.length) {
+                tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><i class="fas fa-inbox"></i><p>Tidak ada data yang ditemukan</p></div></td></tr>`;
+            } else {
+                tbody.innerHTML = rows.map((d, i) => `
+                    <tr>
+                        <td style="color:var(--muted);font-size:12px;">${start + i + 1}</td>
+                        <td>
+                            <div style="font-weight:600;color:var(--text);">${escapeHTML(d.nama_usaha)}</div>
+                            <div style="font-size:11px;color:var(--muted);margin-top:2px;">${escapeHTML(d.keterangan)}</div>
+                        </td>
+                        <td><span class="badge badge-info">${escapeHTML(d.jenis_usaha)}</span></td>
+                        <td>${escapeHTML(d.pemilik)}</td>
+                        <td>${escapeHTML(d.kecamatan)}</td>
+                        <td style="text-align:center;font-weight:600;">${d.jumlah_tenaga_kerja ?? '-'}</td>
+                        <td style="font-weight:600;color:var(--success);">${formatRupiah(d.omzet_per_bulan)}</td>
+                        <td>
+                            <span class="badge ${d.status === 'aktif' ? 'badge-success' : 'badge-danger'}">
+                                ${d.status === 'aktif' ? 'Aktif' : 'Tidak Aktif'}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="display:flex;gap:6px;">
+                                <button class="btn btn-sm btn-secondary" onclick="openEditModal(${d.id})" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteItem(${d.id})" title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            // Pagination
+            const pag = document.getElementById('ekonomiPagination');
+            if (!pag) return;
+            if (totalPages <= 1) { pag.innerHTML = ''; return; }
+
+            let pages = '';
+            for (let p = 1; p <= totalPages; p++) {
+                pages += `<button onclick="goPage(${p})" style="padding:5px 11px;border-radius:6px;border:1px solid ${p===currentPage?'var(--primary)':'var(--border)'};background:${p===currentPage?'var(--primary)':'var(--surface)'};color:${p===currentPage?'white':'var(--text)'};font-size:13px;font-weight:${p===currentPage?'700':'500'};cursor:pointer;transition:all 0.15s;">${p}</button>`;
+            }
+            pag.innerHTML = `<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                <span style="font-size:12px;color:var(--muted);margin-right:4px;">Halaman ${currentPage} dari ${totalPages}</span>
+                ${pages}
+            </div>`;
+        }
+
+        window.goPage = (p) => { currentPage = p; renderTable(); };
+        window.onFilter = () => { currentPage = 1; renderTable(); };
+
+        // ====================== MODAL FORM ======================
+        function buildForm(item = {}) {
+            return `
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                    <div class="form-group" style="grid-column:1/-1;">
+                        <label>Nama Usaha <span style="color:var(--danger)">*</span></label>
+                        <input type="text" name="nama_usaha" class="form-control" value="${escapeHTML(item.nama_usaha || '')}" placeholder="Nama usaha / UKM" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Jenis Usaha</label>
+                        <select name="jenis_usaha" class="form-control">
+                            ${JENIS_LIST.map(j => `<option value="${j}" ${item.jenis_usaha===j?'selected':''}>${j}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status" class="form-control">
+                            <option value="aktif" ${item.status==='aktif'||!item.status?'selected':''}>Aktif</option>
+                            <option value="tidak_aktif" ${item.status==='tidak_aktif'?'selected':''}>Tidak Aktif</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Pemilik</label>
+                        <input type="text" name="pemilik" class="form-control" value="${escapeHTML(item.pemilik || '')}" placeholder="Nama pemilik">
+                    </div>
+                    <div class="form-group">
+                        <label>No. HP</label>
+                        <input type="text" name="no_hp" class="form-control" value="${escapeHTML(item.no_hp || '')}" placeholder="081234...">
+                    </div>
+                    <div class="form-group">
+                        <label>Kecamatan</label>
+                        <select name="kecamatan" class="form-control">
+                            ${KECAMATAN_LIST.map(k => `<option value="${k}" ${item.kecamatan===k?'selected':''}>${k}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Kelurahan</label>
+                        <input type="text" name="kelurahan" class="form-control" value="${escapeHTML(item.kelurahan || '')}" placeholder="Nama kelurahan">
+                    </div>
+                    <div class="form-group">
+                        <label>Jumlah Tenaga Kerja</label>
+                        <input type="number" name="jumlah_tenaga_kerja" class="form-control" value="${item.jumlah_tenaga_kerja || ''}" placeholder="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Tahun Berdiri</label>
+                        <input type="number" name="tahun_berdiri" class="form-control" value="${item.tahun_berdiri || ''}" placeholder="2020" min="1900" max="2099">
+                    </div>
+                    <div class="form-group" style="grid-column:1/-1;">
+                        <label>Omzet per Bulan (Rp)</label>
+                        <input type="number" name="omzet_per_bulan" class="form-control" value="${item.omzet_per_bulan || ''}" placeholder="0" min="0">
+                    </div>
+                    <div class="form-group" style="grid-column:1/-1;">
+                        <label>Keterangan</label>
+                        <input type="text" name="keterangan" class="form-control" value="${escapeHTML(item.keterangan || '')}" placeholder="Keterangan singkat usaha">
+                    </div>
+                </div>
+            `;
+        }
+
+        window.openAddModal = function() {
+            Admin.openModal('Tambah Data Usaha Ekonomi', buildForm(), async (formData) => {
+                if (!formData.nama_usaha?.trim()) {
+                    Admin.toast('Nama usaha wajib diisi', 'error');
+                    return false;
+                }
+                try {
+                    const res = await Admin.apiCall('?table=dataEkonomi', 'POST', formData);
+                    if (res.success || res.id) {
+                        // fallback: also push to local allData
+                        const newId = allData.length ? Math.max(...allData.map(d => d.id)) + 1 : 1;
+                        allData.push({ id: res.id || newId, ...formData });
+                        renderAll();
+                        Admin.toast('Data berhasil ditambahkan');
+                    } else {
+                        // offline fallback
+                        const newId = allData.length ? Math.max(...allData.map(d => d.id)) + 1 : 1;
+                        allData.push({ id: newId, ...formData });
+                        renderAll();
+                        Admin.toast('Data berhasil ditambahkan');
+                    }
+                } catch(e) {
+                    const newId = allData.length ? Math.max(...allData.map(d => d.id)) + 1 : 1;
+                    allData.push({ id: newId, ...formData });
+                    renderAll();
+                    Admin.toast('Data berhasil ditambahkan');
+                }
+            });
+        };
+
+        window.openEditModal = function(id) {
+            const item = allData.find(d => d.id == id);
+            if (!item) return;
+            Admin.openModal('Edit Data Usaha Ekonomi', buildForm(item), async (formData) => {
+                if (!formData.nama_usaha?.trim()) {
+                    Admin.toast('Nama usaha wajib diisi', 'error');
+                    return false;
+                }
+                try {
+                    formData.id = id;
+                    await Admin.apiCall('?table=dataEkonomi', 'PUT', formData);
+                } catch(e) {}
+                const idx = allData.findIndex(d => d.id == id);
+                allData[idx] = { ...allData[idx], ...formData };
+                renderAll();
+                Admin.toast('Data berhasil diperbarui');
+            });
+        };
+
+        window.deleteItem = function(id) {
+            const item = allData.find(d => d.id == id);
+            Admin.confirm(`Hapus usaha "<strong>${escapeHTML(item?.nama_usaha || '')}</strong>"?`, async () => {
+                try { await Admin.apiCall(`?table=dataEkonomi&id=${id}`, 'DELETE'); } catch(e) {}
+                allData = allData.filter(d => d.id != id);
+                renderAll();
+                Admin.toast('Data berhasil dihapus');
+            });
+        };
+
+        initData().then(() => {
+            // Re-render table & stats after renderPage injects HTML
+            setTimeout(() => {
+                renderAll();
+                // Re-attach filter events
+                document.getElementById('searchEkonomi')?.addEventListener('input', onFilter);
+            }, 50);
+        });
+    </script>
+</body>
+</html>

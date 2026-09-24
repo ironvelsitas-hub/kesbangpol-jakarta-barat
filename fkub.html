@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen FKUB - Admin Kesbangpol</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+    <div id="adminApp"></div>
+    <script src="../assets/js/data.js"></script>
+    <script src="../assets/auth.js"></script>
+    <script src="../assets/js/admin.js"></script>
+    <script>
+        if (!Auth.requireAuth()) throw new Error('Not authenticated');
+        let data = Admin.getData('fkub');
+        if (!data.length) { data = DATA.fkub; Admin.setData('fkub', data); }
+        function renderTable(filter = '') {
+            const value = filter.toLowerCase();
+            const filtered = data.filter(item => [item.nama, item.agama, item.jabatan, item.kecamatan].some(field => String(field || '').toLowerCase().includes(value)));
+            return filtered.length ? filtered.map((item, index) => `<tr><td>${index + 1}</td><td>${item.nama}</td><td>${item.agama}</td><td>${item.jabatan}</td><td>${item.kecamatan}</td><td>${item.no_hp}</td><td><button class="btn btn-sm btn-danger btn-icon" onclick="deleteItem(${item.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('') : '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-inbox"></i><p>Tidak ada data</p></div></td></tr>';
+        }
+        const content = `<div class="data-card"><div class="data-card-header"><div><h2>Daftar Anggota FKUB</h2><p style="font-size:13px;color:#64748b;margin-top:4px">Total: <strong>${data.length}</strong> anggota</p></div><div style="display:flex;gap:12px"><div class="search-box"><i class="fas fa-search"></i><input id="searchInput" placeholder="Cari anggota..."></div><button class="btn btn-primary" onclick="addItem()"><i class="fas fa-plus"></i> Tambah</button></div></div><div style="overflow-x:auto"><table class="data-table"><thead><tr><th>No</th><th>Nama</th><th>Agama</th><th>Jabatan</th><th>Kecamatan</th><th>Kontak</th><th>Aksi</th></tr></thead><tbody id="tableBody">${renderTable()}</tbody></table></div></div>`;
+        Admin.renderPage('Manajemen FKUB', 'Data Forum & Organisasi', content);
+        document.getElementById('searchInput')?.addEventListener('input', event => document.getElementById('tableBody').innerHTML = renderTable(event.target.value));
+        function addItem() { Admin.openModal('Tambah Anggota FKUB', '<div class="form-group"><label class="form-label">Nama *</label><input class="form-input" name="nama" required></div><div class="form-group"><label class="form-label">Agama *</label><input class="form-input" name="agama" required></div><div class="form-group"><label class="form-label">Jabatan *</label><input class="form-input" name="jabatan" required></div><div class="form-group"><label class="form-label">Kecamatan *</label><input class="form-input" name="kecamatan" required></div><div class="form-group"><label class="form-label">No. HP *</label><input class="form-input" name="no_hp" required></div>', item => { item.id = data.length ? Math.max(...data.map(row => row.id)) + 1 : 1; data.push(item); Admin.setData('fkub', data); document.getElementById('tableBody').innerHTML = renderTable(); Admin.toast('Data FKUB berhasil ditambahkan!'); }); }
+        function deleteItem(id) { const item = data.find(row => row.id === id); Admin.confirm(`Hapus anggota "${item.nama}"?`, () => { data = data.filter(row => row.id !== id); Admin.setData('fkub', data); document.getElementById('tableBody').innerHTML = renderTable(); Admin.toast('Data FKUB berhasil dihapus!'); }); }
+        window.addItem = addItem; window.deleteItem = deleteItem;
+    </script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan Website - Admin Kesbangpol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+
+    <div id="adminApp"></div>
+
+    <script src="../assets/auth.js"></script>
+    <script src="../assets/js/admin.js"></script>
+    <script>
+        if (!Auth.requireAuth()) throw new Error('Not authenticated');
+
+        // Load settings
+        let settings = JSON.parse(localStorage.getItem('kesbangpol_settings') || '{}');
+        const defaults = {
+            siteName: 'Kesbangpol Jakarta Barat',
+            tagline: 'Suku Badan Kesatuan Bangsa dan Politik',
+            address: 'Jl. Raya Kembangan No.2, Jakarta Barat 11610',
+            phone: '(021) 1234567',
+            email: 'info@kesbangpol.jakbar.go.id',
+            facebook: 'https://facebook.com/kesbangpol.jakbar',
+            instagram: 'https://instagram.com/kesbangpol.jakbar',
+            youtube: 'https://youtube.com/@kesbangpol.jakbar',
+            twitter: 'https://twitter.com/kesbangpol.jakbar',
+            metaDescription: 'Website resmi Suku Badan Kesatuan Bangsa dan Politik Kota Administrasi Jakarta Barat',
+            metaKeywords: 'kesbangpol, jakarta barat, politik, ormas, fpk, fkub, fkdm'
+        };
+        settings = { ...defaults, ...settings };
+
+        const content = `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <!-- General Settings -->
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h2><i class="fas fa-globe" style="color: #3b82f6; margin-right: 8px;"></i> Pengaturan Umum</h2>
+                    </div>
+                    <div style="padding: 24px;">
+                        <div class="form-group">
+                            <label class="form-label">Nama Situs</label>
+                            <input type="text" id="siteName" class="form-input" value="${settings.siteName}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tagline</label>
+                            <input type="text" id="tagline" class="form-input" value="${settings.tagline}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Meta Description</label>
+                            <textarea id="metaDescription" class="form-textarea">${settings.metaDescription}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Meta Keywords</label>
+                            <input type="text" id="metaKeywords" class="form-input" value="${settings.metaKeywords}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h2><i class="fas fa-address-book" style="color: #10b981; margin-right: 8px;"></i> Informasi Kontak</h2>
+                    </div>
+                    <div style="padding: 24px;">
+                        <div class="form-group">
+                            <label class="form-label">Alamat</label>
+                            <textarea id="address" class="form-textarea">${settings.address}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Telepon</label>
+                            <input type="text" id="phone" class="form-input" value="${settings.phone}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="email" class="form-input" value="${settings.email}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h2><i class="fas fa-share-alt" style="color: #f59e0b; margin-right: 8px;"></i> Media Sosial</h2>
+                    </div>
+                    <div style="padding: 24px;">
+                        <div class="form-group">
+                            <label class="form-label"><i class="fab fa-facebook text-blue-600"></i> Facebook</label>
+                            <input type="url" id="facebook" class="form-input" value="${settings.facebook}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><i class="fab fa-instagram text-pink-600"></i> Instagram</label>
+                            <input type="url" id="instagram" class="form-input" value="${settings.instagram}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><i class="fab fa-youtube text-red-600"></i> YouTube</label>
+                            <input type="url" id="youtube" class="form-input" value="${settings.youtube}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><i class="fab fa-twitter text-blue-400"></i> Twitter</label>
+                            <input type="url" id="twitter" class="form-input" value="${settings.twitter}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Actions -->
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h2><i class="fas fa-tools" style="color: #ef4444; margin-right: 8px;"></i> Sistem</h2>
+                    </div>
+                    <div style="padding: 24px;">
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <button class="btn btn-warning" onclick="exportData()">
+                                <i class="fas fa-download"></i> Export Data (JSON)
+                            </button>
+                            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
+                                <i class="fas fa-upload"></i> Import Data (JSON)
+                            </button>
+                            <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                            <button class="btn btn-danger" onclick="resetData()">
+                                <i class="fas fa-redo"></i> Reset ke Default
+                            </button>
+                        </div>
+                        <div style="margin-top: 20px; padding: 16px; background: #fef3c7; border-radius: 10px; font-size: 13px; color: #92400e;">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Data disimpan di <strong>localStorage</strong> browser. Untuk produksi, gunakan backend database.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="btn btn-secondary" onclick="location.reload()">
+                    <i class="fas fa-times"></i> Batal
+                </button>
+                <button class="btn btn-primary" onclick="saveSettings()">
+                    <i class="fas fa-save"></i> Simpan Pengaturan
+                </button>
+            </div>
+        `;
+
+        Admin.renderPage('Pengaturan Website', 'Pengaturan', content);
+
+        function saveSettings() {
+            const newSettings = {
+                siteName: document.getElementById('siteName').value,
+                tagline: document.getElementById('tagline').value,
+                address: document.getElementById('address').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                facebook: document.getElementById('facebook').value,
+                instagram: document.getElementById('instagram').value,
+                youtube: document.getElementById('youtube').value,
+                twitter: document.getElementById('twitter').value,
+                metaDescription: document.getElementById('metaDescription').value,
+                metaKeywords: document.getElementById('metaKeywords').value
+            };
+            localStorage.setItem('kesbangpol_settings', JSON.stringify(newSettings));
+            Admin.toast('Pengaturan berhasil disimpan!', 'success');
+        }
+
+        function exportData() {
+            const allData = {
+                settings: JSON.parse(localStorage.getItem('kesbangpol_settings') || '{}'),
+                fpk: JSON.parse(localStorage.getItem('kesbangpol_fpk') || '[]'),
+                fkub: JSON.parse(localStorage.getItem('kesbangpol_fkub') || '[]'),
+                ormas: JSON.parse(localStorage.getItem('kesbangpol_ormas') || '[]'),
+                users: JSON.parse(localStorage.getItem('admin_users') || '[]')
+            };
+            const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `kesbangpol-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            Admin.toast('Data berhasil di-export!', 'success');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    Object.keys(data).forEach(key => {
+                        localStorage.setItem(`kesbangpol_${key}`, JSON.stringify(data[key]));
+                    });
+                    Admin.toast('Data berhasil di-import!', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } catch (err) {
+                    Admin.toast('File tidak valid!', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetData() {
+            Admin.confirm('Reset semua data ke default? Data yang tersimpan akan hilang.', () => {
+                localStorage.clear();
+                Auth.init();
+                Admin.toast('Data berhasil direset!', 'success');
+                setTimeout(() => location.href = 'dashboard.html', 1500);
+            });
+        }
+
+        window.saveSettings = saveSettings;
+        window.exportData = exportData;
+        window.importData = importData;
+        window.resetData = resetData;
+    </script>
+</body>
+</html>
