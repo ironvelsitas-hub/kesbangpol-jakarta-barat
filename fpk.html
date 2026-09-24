@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen FPK - Admin Kesbangpol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+
+    <div id="adminApp"></div>
+
+    <script src="../assets/js/data.js"></script>
+    <script src="../assets/auth.js"></script>
+    <script src="../assets/js/admin.js"></script>
+    <script>
+        if (!Auth.requireAuth()) throw new Error('Not authenticated');
+
+        let data = Admin.getData('fpk');
+        if (!data.length) {
+            data = DATA.fpk;
+            Admin.setData('fpk', data);
+        }
+
+        function renderTable(filter = '') {
+            const filtered = data.filter(d => 
+                d.nama.toLowerCase().includes(filter.toLowerCase()) ||
+                d.kecamatan.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            if (!filtered.length) {
+                return `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-inbox"></i><p>Tidak ada data</p></div></td></tr>`;
+            }
+
+            return filtered.map((item, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; background: #dbeafe; color: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                                ${item.nama.charAt(0)}
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; color: #0f172a;">${item.nama}</div>
+                                <div style="font-size: 11px; color: #94a3b8;">${item.email || '-'}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${item.jabatan}</td>
+                    <td>${item.kecamatan}</td>
+                    <td>${item.kelurahan || '-'}</td>
+                    <td>${item.no_hp}</td>
+                    <td><span class="badge badge-success">Aktif</span></td>
+                    <td>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="btn btn-sm btn-secondary btn-icon" onclick="editItem(${item.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger btn-icon" onclick="deleteItem(${item.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        const content = `
+            <div class="data-card">
+                <div class="data-card-header">
+                    <div>
+                        <h2>Daftar Anggota FPK</h2>
+                        <p style="font-size: 13px; color: #64748b; margin-top: 4px;">
+                            Total: <strong>${data.length}</strong> anggota
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Cari anggota...">
+                        </div>
+                        <button class="btn btn-primary" onclick="addItem()">
+                            <i class="fas fa-plus"></i> Tambah
+                        </button>
+                    </div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Jabatan</th>
+                                <th>Kecamatan</th>
+                                <th>Kelurahan</th>
+                                <th>Kontak</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">${renderTable()}</tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+
+        Admin.renderPage('Manajemen FPK', 'Data Forum & Organisasi', content);
+
+        document.getElementById('searchInput')?.addEventListener('input', function() {
+            document.getElementById('tableBody').innerHTML = renderTable(this.value);
+        });
+
+        function addItem() {
+            const html = `
+                <div class="form-group"><label class="form-label">Nama *</label><input type="text" name="nama" class="form-input" required></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group"><label class="form-label">Jabatan *</label><input type="text" name="jabatan" class="form-input" required></div>
+                    <div class="form-group"><label class="form-label">Kecamatan *</label><input type="text" name="kecamatan" class="form-input" required></div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group"><label class="form-label">Kelurahan</label><input type="text" name="kelurahan" class="form-input"></div>
+                    <div class="form-group"><label class="form-label">No. HP *</label><input type="text" name="no_hp" class="form-input" required></div>
+                </div>
+                <div class="form-group"><label class="form-label">Email</label><input type="email" name="email" class="form-input"></div>
+            `;
+            Admin.openModal('Tambah Anggota FPK', html, (d) => {
+                d.id = data.length ? Math.max(...data.map(x => x.id)) + 1 : 1;
+                d.status = 'aktif';
+                data.push(d);
+                Admin.setData('fpk', data);
+                document.getElementById('tableBody').innerHTML = renderTable();
+                Admin.toast('Data berhasil ditambahkan!');
+            });
+        }
+
+        function editItem(id) {
+            const item = data.find(d => d.id === id);
+            if (!item) return;
+            const html = `
+                <div class="form-group"><label class="form-label">Nama *</label><input type="text" name="nama" class="form-input" value="${item.nama}" required></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group"><label class="form-label">Jabatan *</label><input type="text" name="jabatan" class="form-input" value="${item.jabatan}" required></div>
+                    <div class="form-group"><label class="form-label">Kecamatan *</label><input type="text" name="kecamatan" class="form-input" value="${item.kecamatan}" required></div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group"><label class="form-label">Kelurahan</label><input type="text" name="kelurahan" class="form-input" value="${item.kelurahan || ''}"></div>
+                    <div class="form-group"><label class="form-label">No. HP *</label><input type="text" name="no_hp" class="form-input" value="${item.no_hp}" required></div>
+                </div>
+                <div class="form-group"><label class="form-label">Email</label><input type="email" name="email" class="form-input" value="${item.email || ''}"></div>
+            `;
+            Admin.openModal('Edit Anggota FPK', html, (d) => {
+                const i = data.findIndex(x => x.id === id);
+                data[i] = { ...data[i], ...d };
+                Admin.setData('fpk', data);
+                document.getElementById('tableBody').innerHTML = renderTable();
+                Admin.toast('Data berhasil diperbarui!');
+            });
+        }
+
+        function deleteItem(id) {
+            const item = data.find(d => d.id === id);
+            Admin.confirm(`Hapus anggota "${item.nama}"?`, () => {
+                data = data.filter(d => d.id !== id);
+                Admin.setData('fpk', data);
+                document.getElementById('tableBody').innerHTML = renderTable();
+                Admin.toast('Data berhasil dihapus!');
+            });
+        }
+
+        window.addItem = addItem;
+        window.editItem = editItem;
+        window.deleteItem = deleteItem;
+    </script>
+</body>
+</html>

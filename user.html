@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen User - Admin Kesbangpol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+
+    <div id="adminApp"></div>
+
+    <script src="../assets/auth.js"></script>
+    <script src="../assets/js/data.js"></script>
+    <script src="../assets/js/admin.js"></script>
+    <script>
+        if (!Auth.requireAuth()) throw new Error('Not authenticated');
+
+        let users = Auth.getUsers();
+
+        const escapeHTML = (value) => String(value ?? '-')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+
+        const organizationCollections = [
+            { key: 'fpk', title: 'Forum Pembauran Kebangsaan (FPK)', icon: 'fa-handshake', name: 'nama', columns: [['jabatan', 'Jabatan'], ['kecamatan', 'Kecamatan'], ['no_hp', 'Kontak']] },
+            { key: 'fkub', title: 'Forum Kerukunan Umat Beragama (FKUB)', icon: 'fa-place-of-worship', name: 'nama', columns: [['agama', 'Agama'], ['jabatan', 'Jabatan'], ['kecamatan', 'Kecamatan']] },
+            { key: 'fkdm', title: 'Forum Kewaspadaan Dini Masyarakat (FKDM)', icon: 'fa-people-group', name: 'nama', columns: [['jabatan', 'Jabatan'], ['kecamatan', 'Kecamatan'], ['no_hp', 'Kontak']] },
+            { key: 'paskibraka', title: 'Paskibraka', icon: 'fa-flag', name: 'nama', columns: [['sekolah', 'Sekolah'], ['kecamatan', 'Kecamatan'], ['tahun', 'Tahun']] },
+            { key: 'dppi', title: 'Dewan Pendidikan dan Pengembangan Indonesia (DPPI)', icon: 'fa-building', name: 'nama_organisasi', columns: [['ketua', 'Ketua'], ['bidang', 'Bidang'], ['kecamatan', 'Kecamatan']] },
+            { key: 'ormas', title: 'Organisasi Masyarakat (Ormas)', icon: 'fa-users', name: 'nama_ormas', columns: [['ketua', 'Ketua'], ['bidang', 'Bidang'], ['kecamatan', 'Kecamatan']] }
+        ];
+
+        function renderOrganizationData() {
+            return organizationCollections.map(collection => {
+                const rows = Admin.getData(collection.key);
+                const headers = ['Nama', ...collection.columns.map(column => column[1])];
+                const body = rows.length
+                    ? rows.map((item, index) => `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td style="font-weight: 600; color: #0f172a;">${escapeHTML(item[collection.name])}</td>
+                            ${collection.columns.map(([key]) => `<td>${escapeHTML(item[key])}</td>`).join('')}
+                        </tr>
+                    `).join('')
+                    : `<tr><td colspan="${headers.length + 1}"><div class="empty-state"><i class="fas fa-inbox"></i><p>Tidak ada data</p></div></td></tr>`;
+
+                return `
+                    <div class="data-card" style="margin-top: 20px;">
+                        <div class="data-card-header">
+                            <div>
+                                <h2><i class="fas ${collection.icon}" style="color: #2563eb; margin-right: 8px;"></i>${collection.title}</h2>
+                                <p style="font-size: 13px; color: #64748b; margin-top: 4px;">Total: <strong>${rows.length}</strong> data</p>
+                            </div>
+                        </div>
+                        <div style="overflow-x: auto; max-height: 420px; overflow-y: auto;">
+                            <table class="data-table">
+                                <thead><tr><th>No</th>${headers.map(header => `<th>${header}</th>`).join('')}</tr></thead>
+                                <tbody>${body}</tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderUsers() {
+            return users.map((item, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
+                                ${item.avatar}
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; color: #0f172a;">${item.name}</div>
+                                <div style="font-size: 12px; color: #94a3b8;">${item.email}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge ${item.role === 'admin' ? 'badge-danger' : 'badge-info'}">
+                            ${item.role === 'admin' ? 'Administrator' : 'Operator'}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="btn btn-sm btn-secondary btn-icon" onclick="editUser(${item.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            ${item.id !== Auth.getUser()?.id ? `
+                                <button class="btn btn-sm btn-danger btn-icon" onclick="deleteUser(${item.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            ` : '<span class="badge badge-info">Anda</span>'}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        const content = `
+            <div class="data-card">
+                <div class="data-card-header">
+                    <div>
+                        <h2>Manajemen User Admin</h2>
+                        <p style="font-size: 13px; color: #64748b; margin-top: 4px;">
+                            Total: <strong>${users.length}</strong> user
+                        </p>
+                    </div>
+                    <button class="btn btn-primary" onclick="addUser()">
+                        <i class="fas fa-user-plus"></i> Tambah User
+                    </button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>User</th>
+                                <th>Role</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTbody">
+                            ${renderUsers()}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div style="margin-top: 28px;">
+                <h2 style="font-size: 20px; font-weight: 700; color: #0f172a;">Data Forum &amp; Organisasi</h2>
+                <p style="font-size: 13px; color: #64748b; margin-top: 4px;">Data yang ditambahkan melalui halaman admin.</p>
+            </div>
+            ${renderOrganizationData()}
+        `;
+
+        Admin.renderPage('Manajemen User', 'Pengaturan', content);
+
+        function addUser() {
+            const formHTML = `
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap *</label>
+                    <input type="text" name="name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email *</label>
+                    <input type="email" name="email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password *</label>
+                    <input type="password" name="password" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role *</label>
+                    <select name="role" class="form-select">
+                        <option value="operator">Operator</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+            `;
+
+            Admin.openModal('Tambah User Baru', formHTML, (data) => {
+                Auth.addUser(data);
+                users = Auth.getUsers();
+                document.getElementById('userTbody').innerHTML = renderUsers();
+                Admin.toast('User berhasil ditambahkan!', 'success');
+            });
+        }
+
+        function editUser(id) {
+            const user = users.find(u => u.id === id);
+            if (!user) return;
+
+            const formHTML = `
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap *</label>
+                    <input type="text" name="name" class="form-input" value="${user.name}" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email *</label>
+                    <input type="email" name="email" class="form-input" value="${user.email}" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password Baru</label>
+                    <input type="password" name="password" class="form-input" placeholder="Kosongkan jika tidak diubah">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role *</label>
+                    <select name="role" class="form-select">
+                        <option value="operator" ${user.role === 'operator' ? 'selected' : ''}>Operator</option>
+                        <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Administrator</option>
+                    </select>
+                </div>
+            `;
+
+            Admin.openModal('Edit User', formHTML, (data) => {
+                if (!data.password) delete data.password;
+                const updatedUser = Auth.updateUser(id, data);
+                if (!updatedUser) {
+                    Admin.toast('User tidak ditemukan atau gagal diperbarui.', 'error');
+                    return false;
+                }
+                users = Auth.getUsers();
+                document.getElementById('userTbody').innerHTML = renderUsers();
+                Admin.toast('User berhasil diperbarui!', 'success');
+            });
+        }
+
+        function deleteUser(id) {
+            const user = users.find(u => u.id === id);
+            if (!user) return;
+
+            Admin.confirm(`Hapus user "${user.name}"?`, () => {
+                Auth.deleteUser(id);
+                users = Auth.getUsers();
+                document.getElementById('userTbody').innerHTML = renderUsers();
+                Admin.toast('User berhasil dihapus!', 'success');
+            });
+        }
+
+        window.addUser = addUser;
+        window.editUser = editUser;
+        window.deleteUser = deleteUser;
+    </script>
+</body>
+</html>

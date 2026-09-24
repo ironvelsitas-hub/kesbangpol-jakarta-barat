@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Kesbangpol Jakarta Barat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+
+    <div id="adminApp"></div>
+
+    <script src="../assets/js/data.js"></script>
+    <script src="../assets/auth.js"></script>
+    <script src="../assets/js/admin.js"></script>
+    <script>
+        // Check auth
+        if (!Auth.requireAuth()) {
+            throw new Error('Not authenticated');
+        }
+
+        async function initDashboard() {
+            const getCollection = async (key) => await Admin.getData(key);
+            
+            const fpk = await getCollection('fpk');
+            const fkub = await getCollection('fkub');
+            const fkdm = await getCollection('fkdm');
+            const paskibraka = await getCollection('paskibraka');
+            const dppi = await getCollection('dppi');
+            const dprd = await getCollection('dprd');
+            const partai = await getCollection('partai');
+            const ormas = await getCollection('ormas');
+            const timTerpadu = await getCollection('timTerpadu');
+            // Assuming these are still from DATA as they might not be migrated to DB yet
+            const rumahIbadah = Array.isArray(DATA['rumahIbadah']) ? DATA['rumahIbadah'] : [];
+            const petaKonflik = Array.isArray(DATA['petaKonflik']) ? DATA['petaKonflik'] : [];
+            const dataEkonomi = Array.isArray(DATA['dataEkonomi']) ? DATA['dataEkonomi'] : [];
+
+            // Dashboard Content
+            const stats = [
+                { label: 'Total FPK', value: fpk.length, icon: 'fa-handshake', color: 'blue' },
+                { label: 'Total FKUB', value: fkub.length, icon: 'fa-place-of-worship', color: 'green' },
+                { label: 'Total FKDM', value: fkdm.length, icon: 'fa-people-group', color: 'purple' },
+                { label: 'Total Paskibraka', value: paskibraka.length, icon: 'fa-flag', color: 'red' },
+                { label: 'Total DPPI', value: dppi.length, icon: 'fa-building', color: 'orange' },
+                { label: 'Total DPRD', value: dprd.length, icon: 'fa-user-tie', color: 'teal' },
+                { label: 'Total Partai', value: partai.length, icon: 'fa-flag-usa', color: 'pink' },
+                { label: 'Total Ormas', value: ormas.length, icon: 'fa-users', color: 'blue' },
+                { label: 'Tim Terpadu', value: timTerpadu.length, icon: 'fa-people-arrows', color: 'green' },
+                { label: 'Rumah Ibadah', value: rumahIbadah.length, icon: 'fa-mosque', color: 'purple' },
+                { label: 'Lokasi Konflik', value: petaKonflik.length, icon: 'fa-fire', color: 'red' },
+                { label: 'Data Ekonomi', value: dataEkonomi.length, icon: 'fa-chart-line', color: 'orange' }
+            ];
+
+            const statsHTML = `
+                <div class="stats-grid">
+                    ${stats.map(s => `
+                        <div class="stat-card">
+                            <div class="stat-icon ${s.color}">
+                                <i class="fas ${s.icon}"></i>
+                            </div>
+                            <div class="stat-value">${s.value}</div>
+                            <div class="stat-label">${s.label}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            // Recent activity
+            const recentHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                    <div class="data-card">
+                        <div class="data-card-header">
+                            <h2><i class="fas fa-clock" style="color: #3b82f6; margin-right: 8px;"></i> Statistik Ormas</h2>
+                        </div>
+                        <div style="padding: 24px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                <span style="font-size: 14px; color: #64748b;">Terlapor</span>
+                                <span class="badge badge-danger">${ormas.filter(o => o.status_terlapor === 'terlapor').length}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                <span style="font-size: 14px; color: #64748b;">Proses Verifikasi</span>
+                                <span class="badge badge-warning">${ormas.filter(o => o.status_terlapor === 'proses_verifikasi').length}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                <span style="font-size: 14px; color: #64748b;">Tidak Terlapor</span>
+                                <span class="badge badge-success">${ormas.filter(o => o.status_terlapor === 'tidak_terlapor').length}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-header">
+                            <h2><i class="fas fa-map-marked-alt" style="color: #ef4444; margin-right: 8px;"></i> Statistik Konflik</h2>
+                        </div>
+                        <div style="padding: 24px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                <span style="font-size: 14px; color: #64748b;">Tawuran</span>
+                                <span class="badge badge-danger">${petaKonflik.filter(o => o.jenis && o.jenis.toLowerCase().includes('tawuran')).length}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                <span style="font-size: 14px; color: #64748b;">Konflik Sosial</span>
+                                <span class="badge badge-warning">${petaKonflik.filter(o => o.jenis && o.jenis.toLowerCase().includes('konflik')).length}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                <span style="font-size: 14px; color: #64748b;">Total Lokasi</span>
+                                <span class="badge badge-info">${petaKonflik.length}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            Admin.renderPage('Dashboard', 'Dashboard', statsHTML + recentHTML);
+        }
+
+        initDashboard();
+    </script>
+</body>
+</html>

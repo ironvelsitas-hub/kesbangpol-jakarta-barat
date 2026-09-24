@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Politik & Ormas - Admin Kesbangpol</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+    <div id="adminApp"></div>
+
+    <script src="../assets/js/data.js"></script>
+    <script src="../assets/auth.js"></script>
+    <script src="../assets/js/admin.js"></script>
+    <script>
+        if (!Auth.requireAuth()) throw new Error('Not authenticated');
+
+        const escapeHTML = (value) => String(value ?? '-')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+
+        const politicalCollections = [
+            { key: 'partai', title: 'Partai Politik', icon: 'fa-flag-usa', name: 'nama_partai', columns: [['ketua', 'Ketua'], ['sekretaris', 'Sekretaris'], ['jumlah_anggota', 'Jumlah Anggota']] },
+            { key: 'ormas', title: 'Ormas Terlapor', icon: 'fa-exclamation-triangle', name: 'nama_ormas', columns: [['bidang', 'Bidang'], ['kecamatan', 'Kecamatan'], ['status_terlapor', 'Status']] },
+            { key: 'dprd', title: 'Anggota DPRD Dapil 9 & 10', icon: 'fa-landmark', name: 'nama', columns: [['partai', 'Partai'], ['dapil', 'Dapil'], ['jabatan', 'Jabatan']] },
+            { key: 'timTerpadu', title: 'Tim Terpadu', icon: 'fa-people-arrows', name: 'nama_kegiatan', columns: [['tanggal', 'Tanggal'], ['lokasi', 'Lokasi'], ['koordinator', 'Koordinator'], ['hasil', 'Hasil']] }
+        ];
+
+        let collections = [];
+        
+        async function initData() {
+            collections = await Promise.all(politicalCollections.map(async collection => ({
+                ...collection,
+                rows: await Admin.getData(collection.key)
+            })));
+            
+            const summary = `
+                <div class="political-summary-grid">
+                    ${collections.map(collection => `
+                        <div class="political-summary-card" style="cursor: pointer;" onclick="window.showSection('${collection.key}')">
+                            <div class="political-summary-icon"><i class="fas ${collection.icon}"></i></div>
+                            <div>
+                                <div class="political-summary-value">${collection.rows.length}</div>
+                                <div class="political-summary-label">${collection.title}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            const content = `
+                <div class="political-page-intro">
+                    <div>
+                        <span class="political-eyebrow"><i class="fas fa-layer-group"></i> Data Terpadu</span>
+                        <h2>Politik &amp; Ormas</h2>
+                        <p>Kelola dan pantau data politik, organisasi masyarakat, perwakilan DPRD, serta kegiatan tim terpadu.</p>
+                    </div>
+                    <div class="political-intro-mark"><i class="fas fa-landmark"></i></div>
+                </div>
+                ${summary}
+                ${collections.map(renderTable).join('')}
+            `;
+
+            Admin.renderPage('Politik & Ormas', 'Politik & Ormas', content);
+        }
+
+        window.showSection = function(key) {
+            collections.forEach(c => {
+                const el = document.getElementById('section-' + c.key);
+                if (el) el.style.display = c.key === key ? 'block' : 'none';
+            });
+        };
+
+        function renderTable(collection, index) {
+            const headers = ['Nama', ...collection.columns.map(column => column[1]), 'Aksi'];
+            const body = collection.rows.length
+                ? collection.rows.map((item, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td class="political-name">${escapeHTML(item[collection.name])}</td>
+                        ${collection.columns.map(([key]) => `<td>${escapeHTML(item[key])}</td>`).join('')}
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-sm btn-secondary" onclick="editData('${collection.key}', ${item.id})" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteData('${collection.key}', ${item.id})" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('')
+                : `<tr><td colspan="${headers.length + 1}"><div class="empty-state"><i class="fas fa-inbox"></i><p>Tidak ada data</p></div></td></tr>`;
+
+            return `
+                <section id="section-${collection.key}" class="data-card political-section" style="display: ${index === 0 ? 'block' : 'none'};">
+                    <div class="data-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="political-section-title">
+                            <div class="political-section-icon"><i class="fas ${collection.icon}"></i></div>
+                            <div>
+                                <h2>${collection.title}</h2>
+                                <p>${collection.rows.length} data tersimpan</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="addData('${collection.key}')">
+                            <i class="fas fa-plus"></i> Tambah Data
+                        </button>
+                    </div>
+                    <div class="political-table-wrap">
+                        <table class="data-table">
+                            <thead><tr><th>No</th>${headers.map(header => `<th>${header}</th>`).join('')}</tr></thead>
+                            <tbody>${body}</tbody>
+                        </table>
+                    </div>
+                </section>
+            `;
+        }
+
+        window.addData = function(key) {
+            const collection = politicalCollections.find(c => c.key === key);
+            let formHTML = `
+                <div class="form-group">
+                    <label>Nama / Judul</label>
+                    <input type="text" name="${collection.name}" class="form-control" required>
+                </div>
+            `;
+            collection.columns.forEach(([colKey, label]) => {
+                formHTML += `
+                    <div class="form-group">
+                        <label>${label}</label>
+                        <input type="text" name="${colKey}" class="form-control" required>
+                    </div>
+                `;
+            });
+
+            Admin.openModal('Tambah Data ' + collection.title, formHTML, async (formData) => {
+                const res = await Admin.apiCall(`?table=${key}`, 'POST', formData);
+                if (res.success) {
+                    Admin.toast('Data berhasil ditambahkan');
+                    setTimeout(() => location.reload(), 500);
+                } else {
+                    Admin.toast(res.error || 'Terjadi kesalahan', 'error');
+                }
+            });
+        };
+
+        window.editData = function(key, id) {
+            const collection = collections.find(c => c.key === key);
+            const item = collection.rows.find(d => d.id == id);
+            
+            if (!item) return;
+
+            let formHTML = `
+                <div class="form-group">
+                    <label>Nama / Judul</label>
+                    <input type="text" name="${collection.name}" class="form-control" value="${escapeHTML(item[collection.name])}" required>
+                </div>
+            `;
+            collection.columns.forEach(([colKey, label]) => {
+                formHTML += `
+                    <div class="form-group">
+                        <label>${label}</label>
+                        <input type="text" name="${colKey}" class="form-control" value="${escapeHTML(item[colKey])}" required>
+                    </div>
+                `;
+            });
+
+            Admin.openModal('Edit Data ' + collection.title, formHTML, async (formData) => {
+                formData.id = id;
+                const res = await Admin.apiCall(`?table=${key}`, 'PUT', formData);
+                if (res.success) {
+                    Admin.toast('Data berhasil diperbarui');
+                    setTimeout(() => location.reload(), 500);
+                } else {
+                    Admin.toast(res.error || 'Terjadi kesalahan', 'error');
+                }
+            });
+        };
+
+        window.deleteData = function(key, id) {
+            Admin.confirm('Apakah Anda yakin ingin menghapus data ini?', async () => {
+                const res = await Admin.apiCall(`?table=${key}&id=${id}`, 'DELETE');
+                if (res.success) {
+                    Admin.toast('Data berhasil dihapus');
+                    setTimeout(() => location.reload(), 500);
+                } else {
+                    Admin.toast(res.error || 'Terjadi kesalahan', 'error');
+                }
+            });
+        };
+
+        initData();
+    </script>
+</body>
+</html>
